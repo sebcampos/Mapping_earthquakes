@@ -50,4 +50,3 @@ let sanFranAirport =
             "type":"Point",
             "coordinates":[-122.375,37.61899948120117]}}
 ]};
-console.log(sanFranAirport);
