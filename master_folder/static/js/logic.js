@@ -1,12 +1,9 @@
-
 // Add console.log to check to see if our code is working.
 console.log("working");
 
-console.log('correct workplace');
-
 
 // We create the tile layer that will be the background of our map.
-let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/navigation-preview-night-v2/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
@@ -21,61 +18,56 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 
 
-// Accessing the Toronto airline routes GeoJSON URL.
-let torontoData = "https://raw.githubusercontent.com/sebcampos/Mapping_Earthquakes/master/torontoRoutes.json";
-
-
-
 // Accessing the airport GeoJSON URL from my github
 let airportData = "https://raw.githubusercontent.com/sebcampos/Mapping_Earthquakes/master/majorAirports.json";
 
 
-
-
-// Create a style for the lines.
-let myStyle = {
-    color: "#ffffa1",
-    weight: 2
-}
-
-
+// grabbing our GeoJson data
+d3.json(airportData).then(function(data) {
+    console.log(data);
+    //creating the geoJson layer with the retrieved data and adding to map
+    L.geoJson(data, {
+        onEachFeature: function(feature,layer) {
+            layer.bindPopup("<h3>Airport code: " + feature.properties.faa + "</h3> <hr> </hr> <h4>Airport name: "+  feature.properties.name +" </h4>" );
+        }        
+    }).addTo(map);
+});
 
 // create a baselayer defining out different map options
 let baseMaps = {
-    Light: light,
+    Streets: streets,
     Dark: dark
 };
+
+
+
 
 // Create the map object with a center and zoom level.
 let map = L.map('mapid', {
     center: [30, 30],
     zoom: 2,
-    layers: [dark] 
+    layers: [streets] 
 });
 
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
 
-// grabbing our GeoJson data
-d3.json(torontoData).then(function(data) {
-    console.log(data);
-//creating the geoJson layer with the retrieved data and adding to map
-L.geoJson(data, {
-    style: myStyle,
-    onEachFeature: function(feature,layer) {
-            layer.bindPopup("<h3>Airline:  " + feature.properties.airline + "</h3> <hr> </hr> <h4>Destinations: "+  feature.properties.dst +" </h4>" );
-        }        
-    }).addTo(map);
-});
 
-// // grabbing our GeoJson data
-// d3.json(airportData).then(function(data) {
-//     console.log(data);
-//     //creating the geoJson layer with the retrieved data and adding to map
-//     L.geoJson(data, {
-//         onEachFeature: function(feature,layer) {
-//             layer.bindPopup("<h3>Airport code: " + feature.properties.faa + "</h3> <hr> </hr> <h4>Airport name: "+  feature.properties.name +" </h4>" );
-//         }        
-//     }).addTo(map);
-// });
+
+
+
+
+// let geojsonFeature = sanFranAirport;
+
+
+// L.geoJson(geojsonFeature, {
+//     onEachFeature: function(feature, layer) {
+//         console.log(layer);
+//         layer.bindPopup("<h3>Airport code: " + feature.properties.faa + "</h3> <hr> </hr> <h4>Airport name: "+  feature.properties.name +" </h4>" );
+//     }
+// }).addTo(map)
+
+
+
+
